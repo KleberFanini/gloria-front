@@ -1,0 +1,27 @@
+<header class="absolute top-0 left-0 right-0 z-50">
+    <div class="container flex items-center justify-between py-6">
+        <a routerLink="/" class="flex items-center gap-2 group">
+            <i data-lucide="camera" class="w-5 h-5 text-accent"></i>
+            <span class="font-serif text-xl tracking-tight">Lume Studio</span>
+        </a>
+
+        <nav class="hidden md:flex items-center gap-10">
+            <a routerLink="/" routerLinkActive="text-accent" [routerLinkActiveOptions]="{exact: true}"
+                class="text-sm tracking-wide uppercase transition-smooth hover:text-accent text-foreground/80">
+                Portfólio
+            </a>
+            <a routerLink="/agendamento" routerLinkActive="text-accent"
+                class="text-sm tracking-wide uppercase transition-smooth hover:text-accent text-foreground/80">
+                Agendar
+            </a>
+            <a routerLink="/admin" routerLinkActive="text-accent"
+                class="text-sm tracking-wide uppercase transition-smooth hover:text-accent text-foreground/80">
+                Admin
+            </a>
+        </nav>
+
+        <a routerLink="/agendamento" class="md:hidden text-sm uppercase tracking-wide text-accent">
+            Agendar
+        </a>
+    </div>
+</header>

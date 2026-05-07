@@ -1,0 +1,96 @@
+<div class="min-h-screen bg-background">
+    <app-navbar></app-navbar>
+
+    <!-- HERO -->
+    <section class="relative h-screen min-h-[640px] w-full overflow-hidden">
+        <img src="src/assets/hero.jpg" alt="Casal ao pôr do sol em campo dourado — fotografia autoral"
+            class="absolute inset-0 w-full h-full object-cover" />
+        <div class="absolute inset-0" style="background: var(--gradient-overlay)"></div>
+
+        <div class="container relative h-full flex flex-col justify-end pb-20 md:pb-28">
+            <div class="max-w-2xl text-primary-foreground animate-fade-up">
+                <p class="text-xs tracking-[0.3em] uppercase mb-6 opacity-90">
+                    Fotografia autoral · agendamentos abertos
+                </p>
+                <h1 class="font-serif text-5xl md:text-7xl leading-[1.05] mb-8 text-balance">
+                    Memórias que respiram a luz do seu tempo.
+                </h1>
+                <div class="flex flex-wrap gap-3">
+                    <a routerLink="/agendamento"
+                        class="inline-flex items-center gap-2 bg-accent hover:bg-accent/90 text-accent-foreground rounded-none px-8 h-12 transition">
+                        Agendar um ensaio
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 12h14" />
+                            <path d="m12 5 7 7-7 7" />
+                        </svg>
+                    </a>
+                    <a href="#portfolio"
+                        class="inline-flex items-center justify-center bg-transparent border border-primary-foreground/40 text-primary-foreground hover:bg-primary-foreground hover:text-primary rounded-none px-8 h-12 transition">
+                        Ver portfólio
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MANIFESTO -->
+    <section class="container py-24 md:py-32">
+        <div class="max-w-3xl">
+            <p class="text-xs tracking-[0.3em] uppercase text-accent mb-6">Sobre o estúdio</p>
+            <h2 class="font-serif text-3xl md:text-5xl leading-tight text-balance">
+                Fotografia que se parece com você — sem poses ensaiadas, sem pressa.
+            </h2>
+            <p class="mt-8 text-lg text-muted-foreground leading-relaxed">
+                Há mais de oito anos, fotografo histórias de famílias, casais e pessoas que querem guardar
+                momentos com verdade. Cada ensaio começa com uma boa conversa.
+            </p>
+        </div>
+    </section>
+
+    <!-- PORTFOLIO -->
+    <section id="portfolio" class="container pb-24">
+        <div class="flex items-end justify-between mb-10">
+            <div>
+                <p class="text-xs tracking-[0.3em] uppercase text-accent mb-3">Portfólio</p>
+                <h2 class="font-serif text-3xl md:text-4xl">Trabalhos recentes</h2>
+            </div>
+            <a routerLink="/agendamento"
+                class="hidden md:inline-flex text-sm tracking-wide uppercase hover:text-accent transition-smooth">
+                Reservar data →
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 auto-rows-[280px] gap-3">
+            @for (item of portfolioItems; track item.title) {
+            <figure [class]="'relative overflow-hidden group ' + item.span">
+                <img [src]="item.src" [alt]="item.title" loading="lazy"
+                    class="w-full h-full object-cover transition-smooth group-hover:scale-105" />
+                <figcaption
+                    class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/70 to-transparent text-primary-foreground opacity-0 group-hover:opacity-100 transition-smooth">
+                    <p class="text-xs tracking-[0.2em] uppercase opacity-80">{{ item.category }}</p>
+                    <p class="font-serif text-lg">{{ item.title }}</p>
+                </figcaption>
+            </figure>
+            }
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="bg-primary text-primary-foreground">
+        <div class="container py-24 md:py-32 text-center max-w-3xl">
+            <h2 class="font-serif text-4xl md:text-6xl text-balance leading-tight">
+                Vamos criar algo juntos?
+            </h2>
+            <p class="mt-6 text-lg opacity-80">
+                Conte sua ideia em poucos passos. Eu retorno com tudo combinado em até 24 horas.
+            </p>
+            <a routerLink="/agendamento"
+                class="inline-flex items-center justify-center mt-10 bg-accent hover:bg-accent/90 text-accent-foreground rounded-none px-10 h-12 transition">
+                Iniciar agendamento
+            </a>
+        </div>
+    </section>
+
+    <app-footer></app-footer>
+</div>
