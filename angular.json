@@ -22,15 +22,12 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "assets"
+                "input": "public"
               },
               {
                 "glob": "**/*",
-                "input": "public"
+                "input": "src/assets"
               }
-            ],
-            "styles": [
-              "src/styles.css"
             ]
           },
           "configurations": {
