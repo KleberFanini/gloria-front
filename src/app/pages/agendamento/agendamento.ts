@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { RouterModule } from '@angular/router';
 import { Footer } from '../../components/footer/footer';
 import { Navbar } from '../../components/navbar/navbar';
+import { Api } from '../../services/api';
 
 interface SessionType {
   value: string;
@@ -63,7 +64,10 @@ export class Agendamento {
   isSubmitting = false;
   minDate: Date;
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private api: Api
+  ) {
     this.minDate = new Date();
     this.minDate.setHours(0, 0, 0, 0);
 
@@ -105,29 +109,23 @@ export class Agendamento {
     if (this.bookingForm.valid) {
       this.isSubmitting = true;
 
-      // Simular envio - substituir pela chamada real do Supabase
-      setTimeout(() => {
-        console.log('Form values:', this.bookingForm.value);
-        this.isSubmitting = false;
-        this.submitted = true;
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-
-        // Exemplo de chamada real:
-        // this.supabase.from('booking_requests').insert({
-        //   client_name: this.bookingForm.value.client_name,
-        //   client_email: this.bookingForm.value.client_email,
-        //   client_phone: this.bookingForm.value.client_phone,
-        //   session_type: this.bookingForm.value.session_type,
-        //   preferred_date: this.formatDate(this.bookingForm.value.preferred_date),
-        //   alternative_date: this.bookingForm.value.alternative_date ? 
-        //     this.formatDate(this.bookingForm.value.alternative_date) : null,
-        //   notes: this.bookingForm.value.notes || null,
-        // });
-      }, 1500);
+      // Chamar API real
+      this.api.createBooking(this.bookingForm.value).subscribe({
+        next: (response) => {
+          console.log('✅ Agendamento criado:', response);
+          this.isSubmitting = false;
+          this.submitted = true;
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        },
+        error: (error) => {
+          console.error('❌ Erro ao criar agendamento:', error);
+          this.isSubmitting = false;
+          alert(error.error?.error || 'Erro ao enviar. Tente novamente.');
+        }
+      });
     } else {
       Object.keys(this.bookingForm.controls).forEach(key => {
-        const control = this.bookingForm.get(key);
-        control?.markAsTouched();
+        this.bookingForm.get(key)?.markAsTouched();
       });
     }
   }

@@ -28,6 +28,9 @@
                 "glob": "**/*",
                 "input": "src/assets"
               }
+            ],
+            "styles": [
+              "src/styles.css"
             ]
           },
           "configurations": {

@@ -1,1 +1,66 @@
-<p>admin works!</p>
+<div class="min-h-screen bg-background flex flex-col">
+    <app-navbar />
+
+    <main class="flex-grow container pt-32 pb-8">
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="font-serif text-3xl">Área Administrativa</h1>
+            <div class="flex items-center gap-4">
+                <span class="text-sm text-muted-foreground">
+                    Olá, <strong>{{ user?.name }}</strong>
+                </span>
+                <button (click)="logout()" routerLink="/"
+                    class="text-sm text-destructive hover:text-destructive/80 transition">
+                    Sair
+                </button>
+            </div>
+        </div>
+
+        <h2 class="font-serif text-2xl mb-6">Agendamentos</h2>
+
+        <div *ngIf="isLoading" class="text-center py-12">
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-accent"></div>
+            <p class="mt-2 text-muted-foreground">Carregando...</p>
+        </div>
+
+        <div *ngIf="!isLoading && bookings.length === 0" class="text-center py-12 text-muted-foreground">
+            Nenhum agendamento encontrado.
+        </div>
+
+        <div *ngIf="!isLoading && bookings.length > 0" class="overflow-x-auto">
+            <table class="w-full border border-border">
+                <thead class="bg-muted">
+                    <tr>
+                        <th class="px-4 py-3 text-left text-sm font-medium">ID</th>
+                        <th class="px-4 py-3 text-left text-sm font-medium">Cliente</th>
+                        <th class="px-4 py-3 text-left text-sm font-medium">Email</th>
+                        <th class="px-4 py-3 text-left text-sm font-medium">WhatsApp</th>
+                        <th class="px-4 py-3 text-left text-sm font-medium">Tipo</th>
+                        <th class="px-4 py-3 text-left text-sm font-medium">Produto</th>
+                        <th class="px-4 py-3 text-left text-sm font-medium">Local</th>
+                        <th class="px-4 py-3 text-left text-sm font-medium">Data</th>
+                        <th class="px-4 py-3 text-left text-sm font-medium">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let booking of bookings" class="border-t border-border hover:bg-muted/30 transition">
+                        <td class="px-4 py-3 text-sm">{{ booking.id }}</td>
+                        <td class="px-4 py-3 text-sm">{{ booking.client_name }}</td>
+                        <td class="px-4 py-3 text-sm">{{ booking.client_email }}</td>
+                        <td class="px-4 py-3 text-sm">{{ booking.client_phone }}</td>
+                        <td class="px-4 py-3 text-sm">{{ booking.session_type }}</td>
+                        <td class="px-4 py-3 text-sm">{{ booking.photo_product }}</td>
+                        <td class="px-4 py-3 text-sm">{{ booking.location_type }}</td>
+                        <td class="px-4 py-3 text-sm">{{ booking.preferred_date }}</td>
+                        <td class="px-4 py-3">
+                            <span class="px-2 py-1 text-xs rounded" [class]="getStatusClass(booking.status)">
+                                {{ getStatusText(booking.status) }}
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <app-footer />
+</div>
