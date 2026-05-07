@@ -5,6 +5,12 @@ import { Auth } from '../../services/auth';
 import { Api } from '../../services/api';
 import { Navbar } from '../../components/navbar/navbar';
 import { Footer } from '../../components/footer/footer';
+import { bootstrapApplication } from '@angular/platform-browser';
+import { App } from '../../app';
+import { appConfig } from '../../app.config';
+import 'zone.js';
+
+bootstrapApplication(App, appConfig).catch(err => console.error(err));
 
 @Component({
   selector: 'app-admin',
@@ -34,15 +40,15 @@ export class Admin {
 
   loadBookings() {
     this.isLoading = true;
-    console.log('🔄 Carregando agendamentos...');
+    console.log('🔄 Iniciando carregamento...');
 
     this.api.getAllBookings().subscribe({
       next: (response) => {
         console.log('✅ Resposta recebida:', response);
-        console.log('📊 Bookings:', response.bookings);
-        this.bookings = [...response.bookings];
+        console.log('📊 Bookings recebidos:', response.bookings);
+        this.bookings = response.bookings;
         this.isLoading = false;
-        console.log('🔓 isLoading alterado para false');
+        console.log('🔓 isLoading = false, bookings.length =', this.bookings.length);
       },
       error: (error) => {
         console.error('❌ Erro:', error);
