@@ -47,4 +47,24 @@ export class Api {
   uploadHeroImage(imageData: string, altText: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/hero`, { image: imageData, alt_text: altText });
   }
+
+  getPortfolio(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/portfolio`);
+  }
+
+  addPortfolioItem(item: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/portfolio`, item);
+  }
+
+  updatePortfolioItem(id: number, item: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/portfolio/${id}`, item);
+  }
+
+  deletePortfolioItem(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/portfolio/${id}`);
+  }
+
+  reorderPortfolioItems(items: any[]): Observable<any> {
+    return this.http.post(`${this.apiUrl}/portfolio/reorder`, { items });
+  }
 }

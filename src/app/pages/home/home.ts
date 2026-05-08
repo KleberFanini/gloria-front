@@ -18,49 +18,13 @@ import { Api } from '../../services/api';
 })
 export class Home {
   heroImage: string = '/assets/hero.jpg';
-  portfolioItems = [
-    {
-      src: '/assets/portfolio-1.jpg',
-      title: 'Ensaio Casal',
-      category: 'Casal',
-      span: 'md:col-span-2'
-    },
-    {
-      src: '/assets/portfolio-2.jpg',
-      title: 'Família',
-      category: 'Família',
-      span: ''
-    },
-    {
-      src: '/assets/portfolio-3.jpg',
-      title: 'Retrato',
-      category: 'Individual',
-      span: ''
-    },
-    {
-      src: '/assets/portfolio-4.jpg',
-      title: 'Gestante',
-      category: 'Gestante',
-      span: ''
-    },
-    {
-      src: '/assets/portfolio-5.jpg',
-      title: 'Aniversário',
-      category: 'Evento',
-      span: ''
-    },
-    {
-      src: '/assets/portfolio-6.jpg',
-      title: 'Casamento',
-      category: 'Evento',
-      span: 'md:col-span-2'
-    }
-  ];
+  portfolioItems: any[] = [];
 
   constructor(private api: Api) { }
 
   ngOnInit() {
     this.loadHeroImage();
+    this.loadPortfolio();
   }
 
   loadHeroImage() {
@@ -70,9 +34,16 @@ export class Home {
           this.heroImage = response.image_data;
         }
       },
-      error: (err) => {
-        console.error('Erro ao carregar hero image:', err);
-      }
+      error: (err) => console.error('Erro ao carregar hero:', err)
+    });
+  }
+
+  loadPortfolio() {
+    this.api.getPortfolio().subscribe({
+      next: (response) => {
+        this.portfolioItems = response;
+      },
+      error: (err) => console.error('Erro ao carregar portfólio:', err)
     });
   }
 }
