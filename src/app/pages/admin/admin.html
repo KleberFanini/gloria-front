@@ -1,66 +1,91 @@
 <div class="min-h-screen bg-background flex flex-col">
-    <app-navbar />
+    <app-navbar></app-navbar>
 
-    <main class="flex-grow container pt-32 pb-8">
-        <div class="flex justify-between items-center mb-8">
-            <h1 class="font-serif text-3xl">Área Administrativa</h1>
-            <div class="flex items-center gap-4">
-                <span class="text-sm text-muted-foreground">
-                    Olá, <strong>{{ user?.name }}</strong>
-                </span>
-                <button (click)="logout()" routerLink="/"
-                    class="text-sm text-destructive hover:text-destructive/80 transition">
-                    Sair
-                </button>
+    <div class="flex-1 pt-16">
+        <!-- Menu de abas horizontal -->
+        <div class="border-b border-border bg-white/50 sticky top-16 z-30">
+            <div class="container mx-auto px-4">
+                <div class="flex justify-between items-center">
+                    <!-- Abas à esquerda -->
+                    <div class="flex gap-1">
+                        <button (click)="activeTab = 'bookings'"
+                            class="px-6 py-4 text-sm font-medium transition border-b-2 -mb-px"
+                            [class.border-accent]="activeTab === 'bookings'"
+                            [class.text-accent]="activeTab === 'bookings'"
+                            [class.border-transparent]="activeTab !== 'bookings'"
+                            [class.text-muted-foreground]="activeTab !== 'bookings'">
+                            <span class="flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                                Agendamentos
+                            </span>
+                        </button>
+                        <button (click)="activeTab = 'portfolio'"
+                            class="px-6 py-4 text-sm font-medium transition border-b-2 -mb-px"
+                            [class.border-accent]="activeTab === 'portfolio'"
+                            [class.text-accent]="activeTab === 'portfolio'"
+                            [class.border-transparent]="activeTab !== 'portfolio'"
+                            [class.text-muted-foreground]="activeTab !== 'portfolio'">
+                            <span class="flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>
+                                    <circle cx="8.5" cy="8.5" r="2.5"></circle>
+                                    <polyline points="22 15 16 9 6 19 2 15"></polyline>
+                                </svg>
+                                Portfólio
+                            </span>
+                        </button>
+                        <button (click)="activeTab = 'hero'"
+                            class="px-6 py-4 text-sm font-medium transition border-b-2 -mb-px"
+                            [class.border-accent]="activeTab === 'hero'" [class.text-accent]="activeTab === 'hero'"
+                            [class.border-transparent]="activeTab !== 'hero'"
+                            [class.text-muted-foreground]="activeTab !== 'hero'">
+                            <span class="flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2">
+                                    <path
+                                        d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
+                                    <circle cx="12" cy="13" r="3" />
+                                </svg>
+                                Foto Hero
+                            </span>
+                        </button>
+                    </div>
+
+                    <!-- Usuário e logout à direita -->
+                    <div class="flex items-center gap-4">
+                        <div class="flex items-center gap-2 text-sm text-muted-foreground">
+                            <span class="font-medium">{{ user?.name || user?.email }}</span>
+                        </div>
+                        <button (click)="logout()"
+                            class="px-3 py-1.5 text-sm text-destructive hover:text-destructive/80 transition flex items-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                                <polyline points="16 17 21 12 16 7" />
+                                <line x1="21" y1="12" x2="9" y2="12" />
+                            </svg>
+                            Sair
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <h2 class="font-serif text-2xl mb-6">Agendamentos</h2>
+        <main class="p-6">
+            <div class="max-w-7xl mx-auto">
+                <app-bookings *ngIf="activeTab === 'bookings'"></app-bookings>
+                <app-portfolio *ngIf="activeTab === 'portfolio'"></app-portfolio>
+                <app-hero *ngIf="activeTab === 'hero'"></app-hero>
+            </div>
+        </main>
+    </div>
 
-        <div *ngIf="isLoading" class="text-center py-12">
-            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-accent"></div>
-            <p class="mt-2 text-muted-foreground">Carregando...</p>
-        </div>
-
-        <div *ngIf="!isLoading && bookings.length === 0" class="text-center py-12 text-muted-foreground">
-            Nenhum agendamento encontrado.
-        </div>
-
-        <div *ngIf="!isLoading && bookings.length > 0" class="overflow-x-auto">
-            <table class="w-full border border-border">
-                <thead class="bg-muted">
-                    <tr>
-                        <th class="px-4 py-3 text-left text-sm font-medium">ID</th>
-                        <th class="px-4 py-3 text-left text-sm font-medium">Cliente</th>
-                        <th class="px-4 py-3 text-left text-sm font-medium">Email</th>
-                        <th class="px-4 py-3 text-left text-sm font-medium">WhatsApp</th>
-                        <th class="px-4 py-3 text-left text-sm font-medium">Tipo</th>
-                        <th class="px-4 py-3 text-left text-sm font-medium">Produto</th>
-                        <th class="px-4 py-3 text-left text-sm font-medium">Local</th>
-                        <th class="px-4 py-3 text-left text-sm font-medium">Data</th>
-                        <th class="px-4 py-3 text-left text-sm font-medium">Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let booking of bookings" class="border-t border-border hover:bg-muted/30 transition">
-                        <td class="px-4 py-3 text-sm">{{ booking.id }}</td>
-                        <td class="px-4 py-3 text-sm">{{ booking.client_name }}</td>
-                        <td class="px-4 py-3 text-sm">{{ booking.client_email }}</td>
-                        <td class="px-4 py-3 text-sm">{{ booking.client_phone }}</td>
-                        <td class="px-4 py-3 text-sm">{{ booking.session_type }}</td>
-                        <td class="px-4 py-3 text-sm">{{ booking.photo_product }}</td>
-                        <td class="px-4 py-3 text-sm">{{ booking.location_type }}</td>
-                        <td class="px-4 py-3 text-sm">{{ booking.preferred_date }}</td>
-                        <td class="px-4 py-3">
-                            <span class="px-2 py-1 text-xs rounded" [class]="getStatusClass(booking.status)">
-                                {{ getStatusText(booking.status) }}
-                            </span>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </main>
-
-    <app-footer />
+    <app-footer></app-footer>
 </div>
