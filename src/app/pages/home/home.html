@@ -3,10 +3,17 @@
 
     <!-- HERO -->
     <section class="relative h-screen min-h-[640px] w-full overflow-hidden">
-        <img src="/assets/hero.jpg" alt="Casal ao pôr do sol em campo dourado — fotografia autoral"
+        <!-- Imagem dinâmica vinda do backend -->
+        <img *ngIf="heroImage" [src]="heroImage" alt="Casal ao pôr do sol em campo dourado — fotografia autoral"
             class="absolute inset-0 w-full h-full object-cover" />
+
+        <!-- Fallback caso não carregue -->
+        <img *ngIf="!heroImage" src="/assets/hero.jpg" alt="Fotografia autoral"
+            class="absolute inset-0 w-full h-full object-cover" />
+
         <div class="absolute inset-0" style="background: var(--gradient-overlay)"></div>
 
+        <!-- Resto do conteúdo igual... -->
         <div class="container relative h-full flex flex-col justify-end pb-20 md:pb-28">
             <div class="max-w-2xl text-primary-foreground animate-fade-up">
                 <p class="text-xs tracking-[0.3em] uppercase mb-6 opacity-90">

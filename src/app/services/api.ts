@@ -39,4 +39,12 @@ export class Api {
   unblockDate(date: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/admin/unavailable-dates/${date}`);
   }
+
+  getHeroImage(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/hero`);
+  }
+
+  uploadHeroImage(imageData: string, altText: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/hero`, { image: imageData, alt_text: altText });
+  }
 }

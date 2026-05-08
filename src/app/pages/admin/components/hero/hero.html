@@ -1,15 +1,103 @@
-<div class="bg-white rounded border border-border">
-    <div class="p-4 border-b border-border bg-muted/20">
-        <h2 class="font-serif text-xl">Gerenciar Foto Hero</h2>
-        <p class="text-sm text-muted-foreground">Altere a imagem principal do site</p>
+<div class="space-y-6">
+    <!-- Hero atual -->
+    <div class="bg-white rounded-lg border border-border overflow-hidden">
+        <div class="px-6 py-4 border-b border-border bg-muted/20">
+            <h2 class="font-serif text-xl">Foto Hero Atual</h2>
+            <p class="text-sm text-muted-foreground">Imagem principal que aparece no topo do site</p>
+        </div>
+        <div class="p-6">
+            <div *ngIf="currentHero" class="relative group">
+                <img [src]="currentHero" alt="Hero atual" class="w-full h-64 object-cover rounded-lg">
+                <div
+                    class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition flex items-center justify-center rounded-lg">
+                    <span class="text-white text-sm">Imagem atual</span>
+                </div>
+            </div>
+            <div *ngIf="!currentHero" class="w-full h-64 bg-muted rounded-lg flex items-center justify-center">
+                <div class="text-center text-muted-foreground">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="1.5" class="mx-auto mb-2 opacity-50">
+                        <path
+                            d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
+                        <circle cx="12" cy="13" r="3" />
+                    </svg>
+                    <p>Nenhuma imagem hero cadastrada</p>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="p-6 text-center text-muted-foreground">
-        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="1.5" class="mx-auto mb-4 opacity-50">
-            <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
-            <circle cx="12" cy="13" r="3" />
-        </svg>
-        <p>Área em desenvolvimento</p>
-        <p class="text-sm mt-2">Em breve você poderá alterar a foto hero aqui.</p>
+
+    <!-- Upload de nova imagem -->
+    <div class="bg-white rounded-lg border border-border overflow-hidden">
+        <div class="px-6 py-4 border-b border-border bg-muted/20">
+            <h2 class="font-serif text-xl">Alterar Foto Hero</h2>
+            <p class="text-sm text-muted-foreground">Envie uma nova imagem para o topo do site</p>
+        </div>
+        <div class="p-6">
+            <!-- Preview da nova imagem -->
+            <div *ngIf="selectedImage" class="mb-6">
+                <p class="text-sm font-medium mb-2">Preview da nova imagem:</p>
+                <img [src]="selectedImage" alt="Preview"
+                    class="w-full h-64 object-cover rounded-lg border border-border">
+            </div>
+
+            <!-- Input de arquivo -->
+            <div class="mb-6">
+                <label class="block text-sm font-medium mb-2">Selecione uma imagem</label>
+                <input type="file" (change)="onFileSelected($event)" accept="image/jpeg,image/png,image/jpg" class="block w-full text-sm text-muted-foreground
+                      file:mr-4 file:py-2 file:px-4
+                      file:rounded-none file:border-0
+                      file:text-sm file:font-medium
+                      file:bg-accent/10 file:text-accent
+                      hover:file:bg-accent/20
+                      cursor-pointer">
+                <p class="text-xs text-muted-foreground mt-2">Formatos aceitos: JPG, PNG. Tamanho máximo: 5MB</p>
+            </div>
+
+            <div *ngIf="uploadError" class="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded">
+                {{ uploadError }}
+            </div>
+
+            <!-- Campo alt text -->
+            <div class="mb-6">
+                <label for="altText" class="block text-sm font-medium mb-2">Texto alternativo (SEO)</label>
+                <input id="altText" type="text" [(ngModel)]="altText"
+                    class="w-full px-3 py-2 border border-border rounded-none focus:outline-none focus:ring-1 focus:ring-ring bg-background"
+                    placeholder="Descrição da imagem para acessibilidade">
+            </div>
+
+            <!-- Botões de ação -->
+            <div class="flex gap-3">
+                <button (click)="uploadImage()" [disabled]="!selectedImage || isUploading"
+                    class="px-6 py-2 bg-accent hover:bg-accent/90 text-accent-foreground rounded-none transition disabled:opacity-50 disabled:cursor-not-allowed">
+                    {{ isUploading ? 'Enviando...' : 'Salvar imagem' }}
+                </button>
+                <button (click)="cancelUpload()" *ngIf="selectedImage"
+                    class="px-6 py-2 border border-border hover:bg-muted rounded-none transition">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recomendações -->
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div class="flex gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="#3b82f6" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+            <div class="text-sm text-blue-800">
+                <strong class="font-medium">Dicas para a imagem hero:</strong>
+                <ul class="mt-1 space-y-1">
+                    <li>• Resolução recomendada: 1920x1080 pixels (16:9)</li>
+                    <li>• Foco no centro da imagem (corte responsivo)</li>
+                    <li>• Evite textos na imagem (sobrepostos pelo site)</li>
+                    <li>• Imagens com pessoas costumam ter melhor engajamento</li>
+                </ul>
+            </div>
+        </div>
     </div>
 </div>
