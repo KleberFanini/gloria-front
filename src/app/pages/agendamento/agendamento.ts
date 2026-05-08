@@ -61,6 +61,7 @@ export class Agendamento implements OnInit {
   unavailableDates: Date[] = [];
   isSubmitting = false;
   minDate: Date;
+  selectedDateUnavailable = false;
   isLoadingTypes = true;
 
   constructor(
@@ -132,6 +133,32 @@ export class Agendamento implements OnInit {
         this.unavailableDates = [];
       }
     });
+  }
+
+  checkDateAvailability() {
+    const date = this.bookingForm.get('preferred_date')?.value;
+    if (date) {
+      const dateObj = typeof date === 'string' ? new Date(date) : date;
+      const isUnavailable = this.unavailableDates.some(d =>
+        d.getFullYear() === dateObj.getFullYear() &&
+        d.getMonth() === dateObj.getMonth() &&
+        d.getDate() === dateObj.getDate()
+      );
+
+      this.selectedDateUnavailable = isUnavailable;
+
+      if (isUnavailable) {
+        this.bookingForm.get('preferred_date')?.setErrors({ 'unavailable': true });
+      } else {
+        const errors = this.bookingForm.get('preferred_date')?.errors;
+        if (errors) {
+          delete errors['unavailable'];
+          if (Object.keys(errors).length === 0) {
+            this.bookingForm.get('preferred_date')?.setErrors(null);
+          }
+        }
+      }
+    }
   }
 
   isDateDisabled(date: Date): boolean {
