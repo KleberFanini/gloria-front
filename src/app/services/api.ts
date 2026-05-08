@@ -67,4 +67,32 @@ export class Api {
   reorderPortfolioItems(items: any[]): Observable<any> {
     return this.http.post(`${this.apiUrl}/portfolio/reorder`, { items });
   }
+
+  getSessionTypes(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/session-types`);
+  }
+
+  getAdminSessionTypes(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/admin/session-types`);
+  }
+
+  addSessionType(item: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/admin/session-types`, item);
+  }
+
+  updateSessionType(id: number, item: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/admin/session-types/${id}`, item);
+  }
+
+  deleteSessionType(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/admin/session-types/${id}`);
+  }
+
+  reorderSessionTypes(items: any[]): Observable<any> {
+    return this.http.post(`${this.apiUrl}/admin/session-types/reorder`, { items });
+  }
+
+  getContactEmail(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/contact-email`);
+  }
 }

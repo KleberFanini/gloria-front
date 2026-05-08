@@ -7,6 +7,7 @@ import { Footer } from '../../components/footer/footer';
 import { Hero } from './components/hero/hero';
 import { Portfolio } from './components/portfolio/portfolio';
 import { Bookings } from './components/bookings/bookings';
+import { SessionTypes } from './components/session-types/session-types';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { appConfig } from '../../app.config';
 import { App } from '../../app';
@@ -24,7 +25,8 @@ bootstrapApplication(App, appConfig)
     Footer,
     Hero,
     Portfolio,
-    Bookings
+    Bookings,
+    SessionTypes
   ],
   templateUrl: './admin.html',
   styleUrl: './admin.css',

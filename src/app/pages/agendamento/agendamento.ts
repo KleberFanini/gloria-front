@@ -7,9 +7,11 @@ import { Navbar } from '../../components/navbar/navbar';
 import { Api } from '../../services/api';
 
 interface SessionType {
+  id?: number;
   value: string;
   label: string;
-  desc: string;
+  desc: string;  // ← Mudar de 'description' para 'desc'
+  is_active?: boolean;
 }
 
 interface PhotoProduct {
@@ -36,22 +38,18 @@ interface LocationType {
   templateUrl: './agendamento.html',
   styleUrl: './agendamento.css',
 })
-export class Agendamento {
-  sessionTypes: SessionType[] = [
-    { value: 'casal', label: 'Casal', desc: 'Ensaios românticos a dois' },
-    { value: 'familia', label: 'Família', desc: 'Pais, filhos, avós' },
-    { value: 'individual', label: 'Individual', desc: 'Retrato autoral' },
-    { value: 'gestante', label: 'Gestante', desc: 'Espera & maternidade' },
-    { value: 'aniversario', label: 'Aniversário', desc: 'Celebrações íntimas' },
-    { value: 'evento', label: 'Evento', desc: 'Casamentos, formaturas' }
-  ];
+export class Agendamento implements OnInit {
+  // Tipos de ensaio - serão carregados do backend
+  sessionTypes: SessionType[] = [];
 
+  // Produtos fotográficos (fixos por enquanto)
   photoProducts: PhotoProduct[] = [
     { value: 'digital', label: 'Digital', desc: 'Arquivos em alta resolução' },
     { value: 'reveladas', label: 'Reveladas', desc: 'Fotos impressas em papel fotográfico' },
     { value: 'ambos', label: 'Ambos', desc: 'Digital + Reveladas' }
   ];
 
+  // Tipos de local (fixos por enquanto)
   locationTypes: LocationType[] = [
     { value: 'studio', label: 'No estúdio', desc: 'Estrutura preparada e climatizada' },
     { value: 'externo', label: 'Externo', desc: 'Ar livre (parques, praças, ruas)' },
@@ -63,6 +61,7 @@ export class Agendamento {
   unavailableDates: Date[] = [];
   isSubmitting = false;
   minDate: Date;
+  isLoadingTypes = true;
 
   constructor(
     private fb: FormBuilder,
@@ -87,11 +86,52 @@ export class Agendamento {
 
   ngOnInit() {
     document.title = 'Agendar ensaio | Lume Studio';
+    this.loadSessionTypes();
     this.loadUnavailableDates();
   }
 
+  // Carregar tipos de ensaio do backend
+  loadSessionTypes() {
+    this.isLoadingTypes = true;
+    this.api.getSessionTypes().subscribe({
+      next: (response) => {
+        // Converter resposta para o formato esperado pelo template (usando 'desc')
+        this.sessionTypes = response.map((item: any) => ({
+          value: item.value,
+          label: item.label,
+          desc: item.description || item.desc || '',  // ← Usar 'desc'
+          is_active: item.is_active
+        }));
+        this.isLoadingTypes = false;
+      },
+      error: (err) => {
+        console.error('❌ Erro ao carregar tipos de ensaio:', err);
+        // Fallback para tipos padrão
+        this.sessionTypes = [
+          { value: 'casal', label: 'Casal', desc: 'Ensaios românticos a dois' },
+          { value: 'familia', label: 'Família', desc: 'Pais, filhos, avós' },
+          { value: 'individual', label: 'Individual', desc: 'Retrato autoral' },
+          { value: 'gestante', label: 'Gestante', desc: 'Espera & maternidade' },
+          { value: 'aniversario', label: 'Aniversário', desc: 'Celebrações íntimas' },
+          { value: 'evento', label: 'Evento', desc: 'Casamentos, formaturas' }
+        ];
+        this.isLoadingTypes = false;
+      }
+    });
+  }
+
   loadUnavailableDates() {
-    this.unavailableDates = [];
+    this.api.getUnavailableDates().subscribe({
+      next: (response) => {
+        if (response && Array.isArray(response)) {
+          this.unavailableDates = response.map((item: any) => new Date(item.date));
+        }
+      },
+      error: (err) => {
+        console.error('Erro ao carregar datas indisponíveis:', err);
+        this.unavailableDates = [];
+      }
+    });
   }
 
   isDateDisabled(date: Date): boolean {
@@ -109,8 +149,15 @@ export class Agendamento {
     if (this.bookingForm.valid) {
       this.isSubmitting = true;
 
-      // Chamar API real
-      this.api.createBooking(this.bookingForm.value).subscribe({
+      // Preparar dados para enviar ao backend
+      const formData = {
+        ...this.bookingForm.value,
+        preferred_date: this.formatDate(this.bookingForm.value.preferred_date),
+        alternative_date: this.bookingForm.value.alternative_date ?
+          this.formatDate(this.bookingForm.value.alternative_date) : null
+      };
+
+      this.api.createBooking(formData).subscribe({
         next: (response) => {
           console.log('✅ Agendamento criado:', response);
           this.isSubmitting = false;
@@ -120,13 +167,20 @@ export class Agendamento {
         error: (error) => {
           console.error('❌ Erro ao criar agendamento:', error);
           this.isSubmitting = false;
-          alert(error.error?.error || 'Erro ao enviar. Tente novamente.');
+          let errorMessage = 'Erro ao enviar. Tente novamente.';
+          if (error.error?.error) {
+            errorMessage = error.error.error;
+          }
+          alert(errorMessage);
         }
       });
     } else {
+      // Marcar todos os campos como tocados para mostrar erros
       Object.keys(this.bookingForm.controls).forEach(key => {
         this.bookingForm.get(key)?.markAsTouched();
       });
+
+      alert('Por favor, preencha todos os campos obrigatórios.');
     }
   }
 

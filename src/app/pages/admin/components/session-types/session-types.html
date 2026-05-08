@@ -1,0 +1,132 @@
+<div class="space-y-6">
+    <!-- Cabeçalho -->
+    <div class="flex justify-between items-center">
+        <div>
+            <h2 class="font-serif text-2xl">Tipos de Ensaio</h2>
+            <p class="text-sm text-muted-foreground">Gerencie as opções que aparecem no formulário de agendamento</p>
+        </div>
+        <button (click)="openAddModal()"
+            class="px-4 py-2 bg-accent hover:bg-accent/90 text-accent-foreground rounded-none transition">
+            + Adicionar tipo
+        </button>
+    </div>
+
+    <!-- Lista -->
+    <div *ngIf="isLoading" class="text-center py-12">
+        <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-accent"></div>
+    </div>
+
+    <div *ngIf="!isLoading && sessionTypes.length === 0" class="text-center py-12 text-muted-foreground bg-muted/20">
+        <p>Nenhum tipo de ensaio cadastrado</p>
+        <p class="text-sm mt-2">Clique em "Adicionar tipo" para começar</p>
+    </div>
+
+    <div *ngIf="!isLoading && sessionTypes.length > 0" class="bg-white border border-border rounded-lg overflow-hidden">
+        <table class="w-full">
+            <thead class="bg-muted/30">
+                <tr>
+                    <th class="px-4 py-3 text-left text-xs font-medium">Ordem</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium">Valor</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium">Label</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium">Descrição</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium">Status</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium">Ações</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-border">
+                <tr *ngFor="let item of sessionTypes; let i = index" class="hover:bg-muted/10">
+                    <td class="px-4 py-3">
+                        <div class="flex gap-1">
+                            <button (click)="moveUp(i)" *ngIf="i > 0"
+                                class="text-muted-foreground hover:text-foreground" title="Mover para cima">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="18 15 12 9 6 15"></polyline>
+                                </svg>
+                            </button>
+                            <button (click)="moveDown(i)" *ngIf="i < sessionTypes.length - 1"
+                                class="text-muted-foreground hover:text-foreground" title="Mover para baixo">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </button>
+                        </div>
+                    </td>
+                    <td class="px-4 py-3 text-sm font-mono">{{ item.value }}</td>
+                    <td class="px-4 py-3 font-medium">{{ item.label }}</td>
+                    <td class="px-4 py-3 text-sm text-muted-foreground">{{ item.description || '—' }}</td>
+                    <td class="px-4 py-3">
+                        <button (click)="toggleActive(item)" class="px-2 py-1 text-xs rounded transition"
+                            [class.bg-green-100]="item.is_active" [class.text-green-800]="item.is_active"
+                            [class.bg-gray-100]="!item.is_active" [class.text-gray-600]="!item.is_active">
+                            {{ item.is_active ? 'Ativo' : 'Inativo' }}
+                        </button>
+                    </td>
+                    <td class="px-4 py-3">
+                        <div class="flex gap-2">
+                            <button (click)="openEditModal(item)"
+                                class="text-blue-600 hover:text-blue-800 text-sm">Editar</button>
+                            <button (click)="deleteItem(item.id)"
+                                class="text-red-600 hover:text-red-800 text-sm">Excluir</button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal -->
+    <div *ngIf="showModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+        (click)="closeModal()">
+        <div class="bg-background max-w-md w-full mx-4 rounded-lg shadow-elevated" (click)="$event.stopPropagation()">
+            <div class="p-6 border-b border-border">
+                <h3 class="font-serif text-xl">{{ editingItem ? 'Editar' : 'Adicionar' }} tipo de ensaio</h3>
+            </div>
+
+            <div class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-2">Valor (identificador) *</label>
+                    <input type="text" [(ngModel)]="value" [disabled]="editingItem"
+                        class="w-full px-3 py-2 border border-border rounded-none focus:outline-none focus:ring-1 focus:ring-ring bg-background"
+                        placeholder="ex: casal, familia, evento">
+                    <p class="text-xs text-muted-foreground mt-1">Usado internamente. Ex: "casal", "familia"</p>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-2">Label (nome visível) *</label>
+                    <input type="text" [(ngModel)]="label"
+                        class="w-full px-3 py-2 border border-border rounded-none focus:outline-none focus:ring-1 focus:ring-ring bg-background"
+                        placeholder="ex: Casal, Família, Evento">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-2">Descrição</label>
+                    <textarea [(ngModel)]="description" rows="2"
+                        class="w-full px-3 py-2 border border-border rounded-none focus:outline-none focus:ring-1 focus:ring-ring bg-background"
+                        placeholder="ex: Ensaios românticos a dois"></textarea>
+                </div>
+
+                <div>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" [(ngModel)]="isActive" class="w-4 h-4">
+                        <span class="text-sm">Ativo (aparece no formulário)</span>
+                    </label>
+                </div>
+
+                <div *ngIf="saveError" class="p-3 bg-red-50 border border-red-200 text-red-600 text-sm">
+                    {{ saveError }}
+                </div>
+            </div>
+
+            <div class="p-6 border-t border-border flex justify-end gap-3">
+                <button (click)="closeModal()"
+                    class="px-4 py-2 border border-border rounded hover:bg-muted">Cancelar</button>
+                <button (click)="saveItem()" [disabled]="isSaving"
+                    class="px-4 py-2 bg-accent hover:bg-accent/90 text-accent-foreground rounded-none transition disabled:opacity-50">
+                    {{ isSaving ? 'Salvando...' : (editingItem ? 'Atualizar' : 'Adicionar') }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

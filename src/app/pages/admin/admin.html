@@ -53,7 +53,23 @@
                                         d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
                                     <circle cx="12" cy="13" r="3" />
                                 </svg>
-                                Foto Hero
+                                Foto Apresentação
+                            </span>
+                        </button>
+                        <button (click)="activeTab = 'session-types'"
+                            class="px-6 py-4 text-sm font-medium transition border-b-2 -mb-px"
+                            [class.border-accent]="activeTab === 'session-types'"
+                            [class.text-accent]="activeTab === 'session-types'"
+                            [class.border-transparent]="activeTab !== 'session-types'"
+                            [class.text-muted-foreground]="activeTab !== 'session-types'">
+                            <span class="flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2">
+                                    <path
+                                        d="M20 7h-4.18A3 3 0 0 0 16 5.18V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v1.18A3 3 0 0 0 8.18 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2Z" />
+                                    <circle cx="12" cy="13" r="3" />
+                                </svg>
+                                Tipos de Ensaio
                             </span>
                         </button>
                     </div>
@@ -83,6 +99,7 @@
                 <app-bookings *ngIf="activeTab === 'bookings'"></app-bookings>
                 <app-portfolio *ngIf="activeTab === 'portfolio'"></app-portfolio>
                 <app-hero *ngIf="activeTab === 'hero'"></app-hero>
+                <app-session-types *ngIf="activeTab === 'session-types'"></app-session-types>
             </div>
         </main>
     </div>
