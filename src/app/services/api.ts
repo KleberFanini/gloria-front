@@ -92,7 +92,15 @@ export class Api {
     return this.http.post(`${this.apiUrl}/admin/session-types/reorder`, { items });
   }
 
-  getContactEmail(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/contact-email`);
+  getAdminWhatsapp(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/admin/whatsapp`);
+  }
+
+  updateAdminWhatsapp(whatsapp: string): Observable<any> {
+    return this.http.put(`${this.apiUrl}/admin/whatsapp`, { whatsapp });
+  }
+
+  getWhatsAppStatus(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/admin/whatsapp-status`);
   }
 }

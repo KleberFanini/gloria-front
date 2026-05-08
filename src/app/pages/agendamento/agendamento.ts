@@ -145,17 +145,52 @@ export class Agendamento implements OnInit {
     );
   }
 
+  formatDate(date: any): string {
+    if (!date) return '';
+
+    // Se for string, converte para Date
+    let dateObj: Date;
+    if (typeof date === 'string') {
+      dateObj = new Date(date);
+    } else if (date instanceof Date) {
+      dateObj = date;
+    } else {
+      return '';
+    }
+
+    // Verificar se é uma data válida
+    if (isNaN(dateObj.getTime())) {
+      return '';
+    }
+
+    const year = dateObj.getFullYear();
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  // No onSubmit, ajuste a preparação dos dados:
   onSubmit() {
     if (this.bookingForm.valid) {
       this.isSubmitting = true;
 
+      const formValues = this.bookingForm.value;
+
       // Preparar dados para enviar ao backend
       const formData = {
-        ...this.bookingForm.value,
-        preferred_date: this.formatDate(this.bookingForm.value.preferred_date),
-        alternative_date: this.bookingForm.value.alternative_date ?
-          this.formatDate(this.bookingForm.value.alternative_date) : null
+        client_name: formValues.client_name,
+        client_email: formValues.client_email,
+        client_phone: formValues.client_phone,
+        session_type: formValues.session_type,
+        photo_product: formValues.photo_product,
+        location_type: formValues.location_type,
+        location_details: formValues.location_details || null,
+        preferred_date: this.formatDate(formValues.preferred_date),
+        alternative_date: formValues.alternative_date ? this.formatDate(formValues.alternative_date) : null,
+        notes: formValues.notes || null
       };
+
+      console.log('📤 Enviando dados:', formData);
 
       this.api.createBooking(formData).subscribe({
         next: (response) => {
@@ -175,20 +210,11 @@ export class Agendamento implements OnInit {
         }
       });
     } else {
-      // Marcar todos os campos como tocados para mostrar erros
       Object.keys(this.bookingForm.controls).forEach(key => {
         this.bookingForm.get(key)?.markAsTouched();
       });
-
       alert('Por favor, preencha todos os campos obrigatórios.');
     }
-  }
-
-  formatDate(date: Date): string {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
   }
 
   selectSessionType(value: string) {

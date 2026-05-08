@@ -8,6 +8,8 @@ import { Hero } from './components/hero/hero';
 import { Portfolio } from './components/portfolio/portfolio';
 import { Bookings } from './components/bookings/bookings';
 import { SessionTypes } from './components/session-types/session-types';
+import { WhatsappSettings } from './components/whatsapp-settings/whatsapp-settings';
+
 import { bootstrapApplication } from '@angular/platform-browser';
 import { appConfig } from '../../app.config';
 import { App } from '../../app';
@@ -26,7 +28,8 @@ bootstrapApplication(App, appConfig)
     Hero,
     Portfolio,
     Bookings,
-    SessionTypes
+    SessionTypes,
+    WhatsappSettings
   ],
   templateUrl: './admin.html',
   styleUrl: './admin.css',

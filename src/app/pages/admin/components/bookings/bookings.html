@@ -51,7 +51,9 @@
                         selectedBooking.client_name }}</strong></div>
                 <div><span class="text-muted-foreground text-sm">Email:</span><br>{{ selectedBooking.client_email }}
                 </div>
-                <div><span class="text-muted-foreground text-sm">WhatsApp:</span><br>{{ selectedBooking.client_phone }}
+                <div><span class="text-muted-foreground text-sm">WhatsApp:</span><br><a [href]="'https://wa.me/' +
+                        selectedBooking.client_phone">
+                        {{ selectedBooking.client_phone }}</a>
                 </div>
                 <div><span class="text-muted-foreground text-sm">Tipo:</span><br>{{ selectedBooking.session_type }}
                 </div>
